@@ -14,8 +14,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -249,6 +249,29 @@ var generateAuthActions = function (config) {
             });
         });
     }; };
+    var resetPassword = function (resetPasswordParameters) { return function (dispatch) {
+        return __awaiter(this, void 0, void 0, function () {
+            var error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, axios_1.default({
+                                method: 'POST',
+                                url: authUrl + "/password",
+                                data: resetPasswordParameters,
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_5 = _a.sent();
+                        throw error_5;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    }; };
     var verifyCredentials = function (store) { return __awaiter(_this, void 0, void 0, function () {
         var verificationParams, _a, _b;
         return __generator(this, function (_c) {
@@ -283,6 +306,7 @@ var generateAuthActions = function (config) {
         signInUser: signInUser,
         signOutUser: signOutUser,
         verifyCredentials: verifyCredentials,
+        resetPassword: resetPassword,
     };
 };
 exports.default = generateAuthActions;

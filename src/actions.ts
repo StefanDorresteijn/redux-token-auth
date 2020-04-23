@@ -11,6 +11,7 @@ import {
   UserRegistrationDetails,
   UserSignInCredentials,
   UserSignOutCredentials,
+  ResetPasswordParameters,
   ActionsExport,
   REGISTRATION_REQUEST_SENT,
   REGISTRATION_REQUEST_SUCCEEDED,
@@ -234,6 +235,18 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
     }
   }
 
+  const resetPassword = (resetPasswordParameters: ResetPasswordParameters) => async function (dispatch: Dispatch<{}>): Promise<void> {
+    try {
+      await axios({
+        method: 'POST',
+        url: `${authUrl}/password`,
+        data: resetPasswordParameters,
+      })
+    } catch(error) {
+      throw error
+    }
+  }
+
   const verifyCredentials = async (store: Store<{}>): Promise<void> => {
     if (await Storage.getItem('access-token')) {
       const verificationParams: VerificationParams = {
@@ -253,6 +266,7 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
     signInUser,
     signOutUser,
     verifyCredentials,
+    resetPassword,
   }
 }
 
