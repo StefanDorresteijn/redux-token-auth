@@ -103,7 +103,13 @@ export interface UserSignOutCredentials {
 
 export interface ResetPasswordParameters {
   readonly email: string
-  readonly redirect_url: string
+  readonly redirectUrl: string
+}
+
+export interface NewPasswordParameters {
+  readonly password: string
+  readonly passwordConfirmation: string
+  readonly headers: AuthHeaders
 }
 
 export interface RegistrationRequestSentAction {
@@ -194,6 +200,7 @@ export interface ActionsExport {
   readonly signInUser: ReduxAsyncAction
   readonly signOutUser: ReduxAsyncAction
   readonly resetPassword: ReduxAsyncAction
+  readonly setNewPassword: ReduxAsyncAction
   readonly verifyCredentials: VerifyCredentialsFunction
 }
 

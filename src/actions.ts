@@ -12,6 +12,7 @@ import {
   UserSignInCredentials,
   UserSignOutCredentials,
   ResetPasswordParameters,
+  NewPasswordParameters,
   ActionsExport,
   REGISTRATION_REQUEST_SENT,
   REGISTRATION_REQUEST_SUCCEEDED,
@@ -236,15 +237,33 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
   }
 
   const resetPassword = (resetPasswordParameters: ResetPasswordParameters) => async function (dispatch: Dispatch<{}>): Promise<void> {
+    await axios({
+      method: 'POST',
+      url: `${authUrl}/password`,
+      data: {
+        email: resetPasswordParameters.email,
+        redirect_url: resetPasswordParameters.redirectUrl,
+      },
+    })
+  }
+
+  const setNewPassword = (newPasswordParameters: NewPasswordParameters) => async function (dispatch: Dispatch<{}>): Promise<void> {
+    setAuthHeaders(newPasswordParameters.headers)
     try {
       await axios({
-        method: 'POST',
+        method: 'PUT',
         url: `${authUrl}/password`,
-        data: resetPasswordParameters,
+        data: {
+          password: newPasswordParameters.password,
+          password_confirmation: newPasswordParameters.passwordConfirmation,
+        },
       })
-    } catch(error) {
+    } catch (error) {
+      deleteAuthHeaders()
+      deleteAuthHeadersFromDeviceStorage(Storage)
       throw error
     }
+    
   }
 
   const verifyCredentials = async (store: Store<{}>): Promise<void> => {
@@ -267,6 +286,7 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
     signOutUser,
     verifyCredentials,
     resetPassword,
+    setNewPassword,
   }
 }
 

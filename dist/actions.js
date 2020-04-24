@@ -251,23 +251,50 @@ var generateAuthActions = function (config) {
     }; };
     var resetPassword = function (resetPasswordParameters) { return function (dispatch) {
         return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, axios_1.default({
+                            method: 'POST',
+                            url: authUrl + "/password",
+                            data: {
+                                email: resetPasswordParameters.email,
+                                redirect_url: resetPasswordParameters.redirectUrl,
+                            },
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    }; };
+    var setNewPassword = function (newPasswordParameters) { return function (dispatch) {
+        return __awaiter(this, void 0, void 0, function () {
             var error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, axios_1.default({
-                                method: 'POST',
-                                url: authUrl + "/password",
-                                data: resetPasswordParameters,
-                            })];
+                        auth_1.setAuthHeaders(newPasswordParameters.headers);
+                        _a.label = 1;
                     case 1:
-                        _a.sent();
-                        return [3 /*break*/, 3];
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, axios_1.default({
+                                method: 'PUT',
+                                url: authUrl + "/password",
+                                data: {
+                                    password: newPasswordParameters.password,
+                                    password_confirmation: newPasswordParameters.passwordConfirmation,
+                                },
+                            })];
                     case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
                         error_5 = _a.sent();
+                        auth_1.deleteAuthHeaders();
+                        auth_1.deleteAuthHeadersFromDeviceStorage(Storage);
                         throw error_5;
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -307,6 +334,7 @@ var generateAuthActions = function (config) {
         signOutUser: signOutUser,
         verifyCredentials: verifyCredentials,
         resetPassword: resetPassword,
+        setNewPassword: setNewPassword,
     };
 };
 exports.default = generateAuthActions;
