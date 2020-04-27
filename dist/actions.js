@@ -274,7 +274,8 @@ var generateAuthActions = function (config) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        auth_1.setAuthHeaders(newPasswordParameters.headers);
+                        if (newPasswordParameters.headers)
+                            auth_1.setAuthHeaders(newPasswordParameters.headers);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -291,8 +292,10 @@ var generateAuthActions = function (config) {
                         return [3 /*break*/, 4];
                     case 3:
                         error_5 = _a.sent();
-                        auth_1.deleteAuthHeaders();
-                        auth_1.deleteAuthHeadersFromDeviceStorage(Storage);
+                        if (newPasswordParameters.headers) {
+                            auth_1.deleteAuthHeaders();
+                            auth_1.deleteAuthHeadersFromDeviceStorage(Storage);
+                        }
                         throw error_5;
                     case 4: return [2 /*return*/];
                 }

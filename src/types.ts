@@ -109,7 +109,7 @@ export interface ResetPasswordParameters {
 export interface NewPasswordParameters {
   readonly password: string
   readonly passwordConfirmation: string
-  readonly headers: AuthHeaders
+  readonly headers?: AuthHeaders
 }
 
 export interface RegistrationRequestSentAction {

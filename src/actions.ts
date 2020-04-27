@@ -248,7 +248,9 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
   }
 
   const setNewPassword = (newPasswordParameters: NewPasswordParameters) => async function (dispatch: Dispatch<{}>): Promise<void> {
-    setAuthHeaders(newPasswordParameters.headers)
+    if (newPasswordParameters.headers)
+      setAuthHeaders(newPasswordParameters.headers)
+
     try {
       await axios({
         method: 'PUT',
@@ -259,8 +261,10 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
         },
       })
     } catch (error) {
-      deleteAuthHeaders()
-      deleteAuthHeadersFromDeviceStorage(Storage)
+      if (newPasswordParameters.headers) {
+        deleteAuthHeaders()
+        deleteAuthHeadersFromDeviceStorage(Storage)
+      }
       throw error
     }
     
