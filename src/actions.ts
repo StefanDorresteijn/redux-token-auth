@@ -136,6 +136,7 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
 
   const registerUser = (
     userRegistrationDetails: UserRegistrationDetails,
+    logUserIn: boolean = false
   ) => async function (dispatch: Dispatch<{}>): Promise<void> {
     dispatch(registrationRequestSent())
     const {
@@ -158,10 +159,12 @@ const generateAuthActions = (config: { [key: string]: any }): ActionsExport => {
         url: authUrl,
         data,
       })
-      setAuthHeaders(response.headers)
-      persistAuthHeadersInDeviceStorage(Storage, response.headers)
-      const userAttributesToSave = getUserAttributesFromResponse(userAttributes, response)
-      dispatch(registrationRequestSucceeded(userAttributesToSave))
+      if(logUserIn) {
+        setAuthHeaders(response.headers)
+        persistAuthHeadersInDeviceStorage(Storage, response.headers)
+        const userAttributesToSave = getUserAttributesFromResponse(userAttributes, response)
+        dispatch(registrationRequestSucceeded(userAttributesToSave))
+      }
     } catch (error) {
       dispatch(registrationRequestFailed())
       throw error

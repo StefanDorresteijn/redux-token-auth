@@ -100,47 +100,52 @@ exports.setHasVerificationBeenAttempted = function (hasVerificationBeenAttempted
 var generateAuthActions = function (config) {
     var authUrl = config.authUrl, storage = config.storage, userAttributes = config.userAttributes, userRegistrationAttributes = config.userRegistrationAttributes;
     var Storage = Boolean(storage.flushGetRequests) ? storage : AsyncLocalStorage_1.default;
-    var registerUser = function (userRegistrationDetails) { return function (dispatch) {
-        return __awaiter(this, void 0, void 0, function () {
-            var email, password, passwordConfirmation, data, response, userAttributesToSave, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        dispatch(exports.registrationRequestSent());
-                        email = userRegistrationDetails.email, password = userRegistrationDetails.password, passwordConfirmation = userRegistrationDetails.passwordConfirmation;
-                        data = {
-                            email: email,
-                            password: password,
-                            password_confirmation: passwordConfirmation,
-                        };
-                        Object.keys(userRegistrationAttributes).forEach(function (key) {
-                            var backendKey = userRegistrationAttributes[key];
-                            data[backendKey] = userRegistrationDetails[key];
-                        });
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, axios_1.default({
-                                method: 'POST',
-                                url: authUrl,
-                                data: data,
-                            })];
-                    case 2:
-                        response = _a.sent();
-                        auth_1.setAuthHeaders(response.headers);
-                        auth_1.persistAuthHeadersInDeviceStorage(Storage, response.headers);
-                        userAttributesToSave = auth_1.getUserAttributesFromResponse(userAttributes, response);
-                        dispatch(exports.registrationRequestSucceeded(userAttributesToSave));
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_1 = _a.sent();
-                        dispatch(exports.registrationRequestFailed());
-                        throw error_1;
-                    case 4: return [2 /*return*/];
-                }
+    var registerUser = function (userRegistrationDetails, logUserIn) {
+        if (logUserIn === void 0) { logUserIn = false; }
+        return function (dispatch) {
+            return __awaiter(this, void 0, void 0, function () {
+                var email, password, passwordConfirmation, data, response, userAttributesToSave, error_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            dispatch(exports.registrationRequestSent());
+                            email = userRegistrationDetails.email, password = userRegistrationDetails.password, passwordConfirmation = userRegistrationDetails.passwordConfirmation;
+                            data = {
+                                email: email,
+                                password: password,
+                                password_confirmation: passwordConfirmation,
+                            };
+                            Object.keys(userRegistrationAttributes).forEach(function (key) {
+                                var backendKey = userRegistrationAttributes[key];
+                                data[backendKey] = userRegistrationDetails[key];
+                            });
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            return [4 /*yield*/, axios_1.default({
+                                    method: 'POST',
+                                    url: authUrl,
+                                    data: data,
+                                })];
+                        case 2:
+                            response = _a.sent();
+                            if (logUserIn) {
+                                auth_1.setAuthHeaders(response.headers);
+                                auth_1.persistAuthHeadersInDeviceStorage(Storage, response.headers);
+                                userAttributesToSave = auth_1.getUserAttributesFromResponse(userAttributes, response);
+                                dispatch(exports.registrationRequestSucceeded(userAttributesToSave));
+                            }
+                            return [3 /*break*/, 4];
+                        case 3:
+                            error_1 = _a.sent();
+                            dispatch(exports.registrationRequestFailed());
+                            throw error_1;
+                        case 4: return [2 /*return*/];
+                    }
+                });
             });
-        });
-    }; };
+        };
+    };
     var verifyToken = function (verificationParams) { return function (dispatch) {
         return __awaiter(this, void 0, void 0, function () {
             var response, userAttributesToSave, error_2;
